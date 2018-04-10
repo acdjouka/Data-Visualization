@@ -1,0 +1,61 @@
+---
+title: "Problem Set 5"
+author: "Ahien C. Djouka"
+date: "11/15/2017"
+output: html_document
+---
+
+The first map is a simple spatial representation of all the hospitals of the State of Pennsylvania. This way we can get an idea of what the hospital repartition looks like over the State. We notice a concentration in Philadelphia and Pittsburgh.
+```{r, message=FALSE, warning=FALSE}
+library(foreign)
+library(ggmap)
+dat <- read.dbf("~/Downloads/pennsylv/pennsylv.dbf")
+lat <- dat$x
+lon <- dat$y
+qmplot(x, y, zoom=8, data = dat, colour = I('blue'))+ggtitle("Map of Pennsylvania Hospitals")
+```
+
+Before we get into specific services or treatments offered, I want to look at the relative size of each hospital. I used the number of beds as proxy.
+```{r, message=FALSE, warning=FALSE}
+dat2 <- dat[complete.cases(dat[,11]),]
+Beds_Number <- dat2$beds_sus
+lat2 <- dat2$x
+lon2 <- dat2$y
+qmplot(x, y, zoom=8, data = dat2, colour = I('blue'))+ geom_point(aes(x = lat2, y = lon2, size = Beds_Number, color = I("orange")))+ggtitle("Pennsylvania Hospitals by Size")
+```
+
+Now let's look into specific services. The first one I want to look at is whether the hospital offers chemotherapy treatment. It looks like about 50% of PA hospitals provide chemotherapy to their patients.
+```{r, message=FALSE, warning=FALSE}
+dat3 <- dat[complete.cases(dat[,22]),]
+Chemo <- dat3$chemo
+lat3 <- dat3$x
+lon3 <- dat3$y
+qmplot(x, y, zoom=8, data =dat3, colour = I('blue'))+ geom_point(aes(x = lat3, y = lon3, colour = Chemo))+ggtitle("Map of Pennsylvania Hospitals by Chemotherapy Service")
+```
+
+The second service I looked into is the Burn Care Service. We see that almost all PA hospitals seem to have a Burn care unit.
+```{r, message=FALSE, warning=FALSE}
+dat4 <- dat[complete.cases(dat[,108]),]
+Social_Work <- dat4$social_wor
+lat4 <- dat4$x
+lon4 <- dat4$y
+qmplot(x, y, zoom=8, data = dat4, colour = I('blue'))+ geom_point(aes(x = lat4, y = lon4, colour = Social_Work))+ggtitle("Map of Pennsylvania Hospitals by Social Work Services")
+```
+
+Then lets look into Gamma KNife surgery, which is one of the primary treatments for brain tumors. Unfortunately, most PA hospitals do not offer gamma knife surgery.
+```{r, message=FALSE, warning=FALSE}
+dat5 <- dat[complete.cases(dat[,50]),]
+Gamma_Knife <- dat4$gamma_knif
+lat5 <- dat5$x
+lon5 <- dat5$y
+qmplot(x, y, zoom=8, data = dat5, colour = I('blue'))+ geom_point(aes(x = lat5, y = lon5, colour = Gamma_Knife))+ggtitle("Map of Pennsylvania Hospitals by Gamma Knife Offering")
+```
+
+The last service I looked into is the helipad access. We can see that most hospitals in the Pittsburgh and Philadelphia areas have helipad access.
+```{r, message=FALSE, warning=FALSE}
+dat6 <- dat[complete.cases(dat[,54]),]
+Helipad <- dat6$helipad
+lat6 <- dat6$x
+lon6 <- dat6$y
+qmplot(x, y, zoom=8, data = dat6, colour = I('blue'))+ geom_point(aes(x = lat6, y = lon6, colour = dat$helipad))+ggtitle("Map of Pennsylvania Hospitals by Helipad Access")
+```
