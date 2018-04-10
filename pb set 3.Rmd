@@ -1,0 +1,72 @@
+---
+title: "Problem Set 3"
+author: "Ahien C. Djouka"
+date: "9/9/2017"
+output: html_document
+---
+
+```{r, echo=TRUE}
+#Visualization 1
+library(ggplot2)
+g <- ggplot(mpg, aes(class))
+Transmission <-mpg$trans
+Vis_1 <- g+geom_bar(aes(fill=Transmission))
+Vis_1
+```
+
+
+```{r, echo=TRUE}
+#Visualization 2
+library(ggplot2)
+g2 <- ggplot(mpg, aes(manufacturer, hwy))
+Vis_2 <- g2 + geom_boxplot() + coord_flip() + xlab("Vehicle Manufacturer") + ylab("Highway Fuel Efficiency (miles/gallon)") + theme(panel.background = element_rect(fill = "white")) + theme(axis.line = element_line(colour = "black"))
+Vis_2
+```
+
+
+```{r, echo=TRUE}
+#Visualization 3
+library(ggplot2)
+library(ggthemes)
+Vis_3 <- ggplot(diamonds, aes(price, fill = cut, colour=cut)) +geom_density(alpha = 0.1) + xlab("Diamond Price (USD)") + ylab("Density") + theme(
+panel.background = element_rect(fill = "azure2"),
+plot.background = element_rect(fill = "azure2"),
+legend.background = element_rect(fill = "azure2"), 
+legend.key = element_rect(colour = "azure2"),
+panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank(),
+panel.grid.minor.y = element_blank(),
+axis.ticks.y = element_blank(),
+axis.line.x = element_line(colour = "black"),
+legend.position = "top") + 
+ggtitle("Diamond Price Density") + theme(
+plot.title = element_text(face = "bold"), 
+legend.title = element_text(size = 8), 
+legend.text = element_text(size = 10),
+axis.title = element_text(size = 8))
+Vis_3
+```
+
+```{r, echo=TRUE}
+#Visualization 4
+library(ggplot2)
+library(ggthemes)
+Vis_4 <- ggplot(iris, aes(iris$Sepal.Length, iris$Petal.Length)) + geom_point() + xlab("Iris Petal Length") + ylab("Iris Petal Length") + ggtitle("Relationship between Petal and Sepal Length") + theme(
+  panel.background = element_rect(fill = "white"),
+  panel.grid.major = element_line(colour = "gray"),
+  panel.grid.minor = element_line(colour = "gray"), 
+  axis.ticks = element_blank()) +
+  scale_y_continuous(breaks=c(2, 4, 6, 8), limits = c(0, 8)) + geom_smooth(method = "lm")
+Vis_4
+```
+
+```{r, echo=TRUE}
+#Visualization 5
+library(ggplot2)
+library(ggthemes)
+Vis_5 <- ggplot(iris, aes(iris$Sepal.Length, iris$Petal.Length, colour = Species)) + geom_point() + xlab("Iris Petal Length") + ylab("Iris Petal Length") + ggtitle("Relationship between Petal and Sepal Length", subtitle = "Species level comparison") +  theme(
+  panel.background = element_rect(fill = "white"),
+  panel.grid = element_blank(),
+  legend.position = "bottom",
+  legend.key = element_rect(fill = "white")) + geom_smooth(se = FALSE, method = "lm")
+Vis_5
+```
