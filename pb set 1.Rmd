@@ -1,0 +1,67 @@
+---
+title: "Pb set 1"
+author: "Ahien C. Djouka"
+date: "9/6/2017"
+output: html_document
+---
+
+## Directions
+
+During ANLY 512 we will be studying the theory and practice of *data visualization*.  We will be using `R` and the packages within `R` to assemble data and construct many different types of visualizations.  We begin by studying some of the theoretical aspects of visualization.  To do that we must appreciate the actual steps in the process of making a visualization.  
+
+Most of us use softare to do this and have done so for so long that we have lost an appreciation for the mechanistic steps involved in accurately graphing data.  We will fix that this week by creating a series of analog (**meaning you draw them by hand**) graphics.  The visualizations you create must be numerically and visually accurate and precisely scaled.  Because of that the data sets we visualize will be small.  
+
+* A couple of tips, remember that there is preprocessing involved in many graphics so you may have to do summaries or calculations to prepare, those should be included in your work.
+
+* To ensure accuracy pay close attention to axes and labels, you will be evaluated based on the accuracy of your graphics.  
+
+The final product of your homework (this file) should include scanned or photographed images for each question below and a short summary of the process.  
+
+To submit this homework you will create the document in Rstudio, using the knitr package (button included in Rstudio) and then submit the document to your [Rpubs](http://rpubs.com/) account.  Once uploaded your will submit the link to that document on Moodle.
+
+## Questions
+
+Find the `mtcars` data in R.  This is the dataset that you will use to create your graphics.  Use that data to draw by hand graphics for the next 4 questions.
+
+1. Draw a pie chart showing the proportion of cars from the `mtcars` data set that have different `carb` values.
+
+In order to create the pie chart, we need to get the corresponding degree size of the angle for each "Carb value". To do so we compute the frequency of each carb value and divide that number by the total number of variables. The resulting number is then multiplied by 360 (the total degree size of a full circle, or pie) in order to get the assigned degree for each carb value. 
+
+```{r}
+knitr:: include_graphics("/Users/clementinedjouka/Desktop/FALL 2017/ANLY 512/problem set 1/Question 1 copy.jpg")
+```
+
+
+2. Draw a bar graph, that shows the number of each `gear` type in `mtcars`.
+
+The bar graph is obtained by creating a frequency table for the gear variable. In order to create teh table, we first list all the different gear values in ascending order and then we count the number of occurences for each. The n we draw the bar graph with each gear value as the x value and the number of occurences, or frequency, as the y-value. 
+
+```{r}
+knitr:: include_graphics("/Users/clementinedjouka/Desktop/FALL 2017/ANLY 512/problem set 1/Question 2 copy.jpg")
+```
+
+
+3. Next show a stacked bar graph of the number of each `gear` type and how they are further divded out by `cyl`.
+
+This graph builds up on the previous bar graph that we created. For each of the gear values, we list the different cyl values and count the number of occurrence of each. From the resulting number we "break down the bars" accordingly. For example, gear value = 3 as 2 occurences of cyl value = 6 so we highlight a portion of the graph representing these 2.
+
+```{r}
+knitr:: include_graphics("/Users/clementinedjouka/Desktop/FALL 2017/ANLY 512/problem set 1/Question 3 copy.jpg")
+```
+
+
+4. Draw a scatter plot showing the relationship between `wt` and `mpg`.  
+
+This graph was created by plotting the 32 data points with the (x;y) combination of each car's mpg and wt. I arbitrarily chose x to be mpg and y to be wt. So for example the first data point has the following coordinates: (21.0;2.62)
+
+```{r}
+knitr:: include_graphics("/Users/clementinedjouka/Desktop/FALL 2017/ANLY 512/problem set 1/Question 4 copy.jpg")
+```
+
+
+5.  Design a visualization of your choice using the data.
+
+For the last graph, i decided to build a horizontal bar graph, showing the frequency of the hp variable. On the vertical axis, we have all the values that hp takes, and on the horizontal axis, we have the number of occurences of each (either 1, 2, or 3). In this case, the "bars" are very narrow because there are many unique variables.
+```{r}
+knitr:: include_graphics("//Users/clementinedjouka/Desktop/FALL 2017/ANLY 512/problem set 1/Question 5 copy.jpg")
+```
