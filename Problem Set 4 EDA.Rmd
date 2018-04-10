@@ -1,0 +1,176 @@
+---
+title: "Problem Set 4 - Exploratory Data Analysis"
+author: "Ahien C. Djouka"
+date: "10/9/2017"
+output: html_document
+---
+
+In order to perform an EDA on this dataset, I will  mostly use the ggplot package. Because the data is mostly categorical, we will have pie charts and bar graphs to show breakdowns of different categories. We will also use bar graphs to see trends over the years based on the year of reception of the complaint.
+We will explore the data under several angles: the types of incidents, the outcomes of the complaints, whether the complaints involve "stop&frisk", etc. We will check out these instances not only overall (accross the board), but also broken down by borough and year of reception of the complaint to see if there is any trend within these boundaries. Then we will discuss any major findings we come accross. 
+
+# 1- Number of allegations
+We have a total of 204,397 allegations in our dataset. Let's see how they are broken down by borough and how the number of allegations reported has changed over the years.
+
+## 1.a- By borough
+```{r, echo=FALSE}
+library(ggplot2)
+library(readxl)
+EDA_data <- read_excel("~/Desktop/FALL 2017/ANLY 512/problem set 4/EDA_data.xlsx")
+Borough <- EDA_data$`Borough of Occurrence`
+g_1a <- ggplot(EDA_data, aes(x="", fill=Borough)) + geom_bar(width = 1) + theme(axis.ticks.y = element_blank(), panel.background = element_blank(), axis.ticks.x = element_blank()) + xlab("") + ylab("") + scale_y_continuous(breaks=c()) + ggtitle("Allegations Broken Down by Borough", subtitle = NULL)
+g_1a + coord_polar("y")
+```
+
+In this pie chart, We notice that most of the allegations occured in Brooklyn, followed by Bronx then Manhattan.
+
+## 1.b- By year received
+```{r, echo=FALSE}
+ggplot(EDA_data, aes(EDA_data$`Received Year`)) + geom_bar(fill="red") + xlab("Year Received") + ylab("Number of Allegations") + ggtitle("Number of Allegations Received per Year")
+```
+
+The bar chart shows that there was a huge increase in complaints received between 2005 and 2006. Since then we have witnessed a gradual decrease in the number of complaints.
+
+# 2- Incidents breakdown
+In this section, we take a look at how many allegations of each type of incident we have; from the FADO category - force, abuse of authority, discourtesy, and offensive language. We first look at the big picture, then break it down under different categories.
+
+## 2.a- Overall
+```{r, echo=FALSE}
+Allegation_Type <- EDA_data$`Allegation FADO Type`
+g_2a <- ggplot(EDA_data, aes(x="", fill=Allegation_Type)) + theme(axis.ticks.y = element_blank(), panel.background = element_blank(), axis.ticks.x = element_blank()) + xlab("") + ylab("") + scale_y_continuous(breaks=c()) + ggtitle("Total Number of Allegations Broken Down by Type")
+g_2a+geom_bar(width = 1)+coord_polar("y", start=0)
+```
+
+Almost half of all the incidents reported are Abuse of Authority. Force and discourtesy are distant seconds and we barely have any reported cases of offensive language.
+
+## 2.b- By borough
+```{r, echo=FALSE}
+g_2b <- ggplot(EDA_data, aes(Borough)) + ggtitle("Total Number of Allegation Broken Down by Type per Borough") + ylab("Number of Allegations") + theme(axis.text.x = element_text(angle = 90))
+g_2b+geom_bar(aes(fill=Allegation_Type))
+```
+
+The breakdown of the types of allegations reported is pretty even throughout all the boroughs.
+
+## 2.c- By incident location
+```{r, echo=FALSE}
+Location <- EDA_data$`Incident Location`
+g_2c <- ggplot(EDA_data, aes(Allegation_Type)) + ylab("Number of Allegations") + ggtitle("Total Number of Allegation Broken Down by Type per Incident Location") + theme(axis.text.x = element_text(angle = 90), legend.key.height = unit(.4, "cm"))
+g_2c+geom_bar(aes(fill=Location))
+```
+
+Most of the incidents reported happened on the street or highway.
+
+## 2.d- By year received
+```{r, echo=FALSE}
+Year <- EDA_data$`Received Year`
+g_2d <- ggplot(EDA_data, aes(Year)) + ylab("Number of Allegations") + ggtitle("Total Number of Allegation Broken Down by Type per Year")
+g_2d+geom_bar(aes(fill=Allegation_Type))
+```
+
+The incidents reported broken down by type of allegations follows a similar pattern for each year. We notice mostly abuse of authority, then force and discourtesy.
+
+# 3- Encounter outcome
+In the third section, we look at the outcome of all the incidents reported in our dataset. The different outcomes are arrests, arrest or summons, summons, and other. We look at an overall visualization, then we take a deeper look by borough, incident location, incident type, and year to see if we can identify any pattern.
+
+## 3.a- Overall
+```{r, echo=FALSE}
+Encounter_Outcome <- EDA_data$`Encounter Outcome`
+g_3a <- ggplot(EDA_data, aes(x="", fill=Encounter_Outcome)) + theme(axis.ticks.y = element_blank(), panel.background = element_blank(), axis.ticks.x = element_blank()) + xlab("") + ylab("") + scale_y_continuous(breaks=c()) + ggtitle("The Different Types of Encounter Outcomes")
+g_3a+geom_bar(width = 1)+coord_polar("y")
+```
+
+We notice that most of the allegations either end up in arrests or no arrest or summons. In approximately 15-20% of cases, we encouter summons.
+
+## 3.b- By borough
+```{r, echo=FALSE}
+g_3b <- ggplot(EDA_data, aes(Borough)) + ylab("Encounter Outcomes") + ggtitle("Encounter Outcomes Broken Down by Borough") + theme(axis.text.x = element_text(angle = 90))
+g_3b+geom_bar(aes(fill=Encounter_Outcome))
+```
+
+Here also we notice a similar breakdown of the outcomes in all the boroughs. 
+
+## 3.c- By incident location
+```{r, echo=FALSE}
+g_3c <- ggplot(EDA_data, aes(Location)) + ylab("Encounter Outcomes") + ggtitle("Encounter Outcomes Broken Down by Incident Location") + theme(axis.text.x = element_text(angle = 90))
+g_3c+geom_bar(aes(fill=Encounter_Outcome))
+```
+
+Here the outcome breakdown by location is pretty even as well except for one thing. We do notice that events occuring in a police building tend to result in more arrests.
+
+## 3.d- By allegation type 
+```{r, echo=FALSE}
+g_3d <- ggplot(EDA_data, aes(Allegation_Type)) + ylab("Encounter Outcomes") + xlab("Allegation Type") + ggtitle("Encounter Outcomes Broken Down by Incident Type") + theme(axis.text.x = element_text(angle = 90))
+g_3d+geom_bar(aes(fill=Encounter_Outcome))
+```
+
+For the outcome breakdown by incident type, it seems that Force resulted in more arrests while the other types resulted mostly in no arrest or summons.
+
+## 3.e- By year received
+```{r, echo=FALSE}
+g_3e <- ggplot(EDA_data, aes(Year)) + ylab("Encounter Outcomes") + ggtitle("Types of Encounter Outcomes Broken Down for Each Year")
+g_3e+geom_bar(aes(fill=Encounter_Outcome))
+```
+
+The outcome breakdown seems to be the same throughout the years
+
+# 4- Complaint of stop and frisk
+In this section, I am particularly interested in the 
+"Stop&Frisk" incidents because it could potentially be an angle to work on during the hypothesis tetsing part of a project. It would be interesting to see if there is any singular pattern that we can identify. Therefore, we look at the number of incidents that include Stop&Frisk" and we see how that compares with the number of Stop&Frisk" reported under more specific circumstances (by borough or by year).
+
+## 4.a- Overall
+```{r, echo=FALSE}
+StopAndFrisk <- EDA_data$`Complaint Contains Stop & Frisk Allegations`
+g_4a <- ggplot(EDA_data, aes(x="", fill=StopAndFrisk)) + theme(axis.ticks.y = element_blank(), panel.background = element_blank(), axis.ticks.x = element_blank()) + xlab("") + ylab("") + scale_y_continuous(breaks=c()) + ggtitle("Incidents Included Stop&FRisk")
+g_4a+geom_bar(width = 1)+coord_polar("y")
+```
+
+More than half of the incidents reported dont include any case of "Stop and Frisk".
+
+## 4.b- By borough
+```{r, echo=FALSE}
+g_4b <- ggplot(EDA_data, aes(Borough)) + ggtitle("Breakdown of Allegations by Stop&Frisk Occurences per Borough") + theme(axis.text.x = element_text(angle=90)) + ylab("Number of Allegations")
+g_4b+geom_bar(aes(fill=StopAndFrisk))
+```
+
+There seems to be no significant difference in whether or not people report more "Stop and Frisk" cases based on the borough.
+
+## 4.c- By year received
+```{r, echo=FALSE}
+g_4c <- ggplot(EDA_data, aes(Year)) + ggtitle("Breakdown of Allegations by Stop&Frisk Occurences per Year") + ylab("Number of Allegations")
+g_4c+geom_bar(aes(fill=StopAndFrisk))
+```
+
+In a similar way, it looks like there is also no difference in whether or not people report more "Stop and Frisk" cases over these 10 years.
+
+
+# 5- Number of allegations by incident location
+Let us take a look at the incident locations in order to see if there is a pattern in where most of them happen.
+```{r, echo=FALSE}
+g_5 <- ggplot(EDA_data, aes(x="", fill=Location)) + theme(axis.ticks.y = element_blank(), panel.background = element_blank(), axis.ticks.x = element_blank()) + xlab("") + ylab("") + scale_y_continuous(breaks=c()) + ggtitle("Allegations Breakdown by Incident Location")
+g_5+geom_bar(width = 1)+coord_polar("y")
+```
+
+We see that most incidents happened on the highway. The distant second location where most incidents happened is the apartment.
+
+
+# 6- Complaint filing mode
+Let's take a look at people's preferred way of reporting an incident.
+
+## 6.a- Overall
+```{r, echo=FALSE}
+Filing_Mode <- EDA_data$`Complaint Filed Mode`
+g_6a <- ggplot(EDA_data, aes(x="", fill=Filing_Mode)) + theme(axis.ticks.y = element_blank(), panel.background = element_blank(), axis.ticks.x = element_blank()) + xlab("") + ylab("") + scale_y_continuous(breaks=c()) + ggtitle("The Different Types of Complaints Filing Mode")
+g_6a+geom_bar(width = 1)+coord_polar("y")
+```
+
+Most complaints are filed by phone, followed by the call processing system.
+
+## 6.b- By year received
+```{r, echo=FALSE}
+g_6b <- ggplot(EDA_data, aes(Year)) + ylab("Number of Complaints Filed") + ggtitle("Breakdown of Complaints Filing Modes for Each  Year")
+g_6b+geom_bar(aes(fill=Filing_Mode))
+```
+
+We noticed that the phone is still the preferred method of submitting complaints. This is a bit of a surprise, as we would expect more complaints to be submitted online as the years go and technology makes online submissions more convenient.
+
+# EDA Summary
+At the end of our exploratory data analysis, we identified few trends. First we have the significant increase in the total number of allegations from 2005 to 2006 that could potentially be investigated. Another one is the significantly higher number of complaints reported coming from Brooklyn. It would be good idea to dive into it and see why that is the case. We also notice that there has not been any major changes in the breakdown of incidents, incident locations, or filing mode over the course of a decade. This EDA enables us to develop several ideas for further hypotheses testings to conduct and to confirm the statistical significance of some of the trends (or lack thereof) that we identified from our visualizations.
