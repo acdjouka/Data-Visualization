@@ -1,0 +1,176 @@
+---
+title: "ANLY 512 Quantified Self"
+author: "Ahien C. Djouka"
+date: "12/3/2017"
+output: 
+  flexdashboard::flex_dashboard:
+    storyboard: true
+    social: menu
+    source: embed
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(readxl)
+library(flexdashboard)
+library(knitr)
+library(ggplot2)
+library(ggthemes)
+library(lubridate)
+library(dygraphs)
+library(plotly)
+library(reshape2)
+QS <- read_excel("~/Desktop/FALL 2017/ANLY 512/final project/QS.xlsx")
+```
+
+###1- Trends Over Aug-Oct Period
+
+The first section will cover the trend over this 3-month period for the following:
+1.a- Sleep patterns
+1.b- Calories Burned During Exercise
+1.c- Activity Levels
+1.d- Resting Heart Rate
+
+I used boxplots broken down by month to highlight any changes month over month.
+
+###1.a - Sleep Patterns
+
+
+```{r}
+sleep_monthly <- ggplot(QS, aes(x=Month, y=QS$`Time in Bed`))+geom_boxplot(aes(group=Month), fill="light blue")+
+  labs(title = "Minutes Asleep per Month", x = "Month", y = "Number of Minutes")+scale_x_discrete(limits=c("August","September","October")) + geom_hline(yintercept = 480, colour="red") + theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())
+sleep_monthly <- ggplotly(sleep_monthly)
+sleep_monthly
+```
+
+***
+We do not see much change in my sleep patterns, except maybe for a slight increase in my average minutes of sleep. 
+One thing to point out is that the average amount of sleep is considered to be 8 hours or 480 mins. I represented this by the red line in the graph. The graph shows that my average sleep time is well below the average (about 150 mins below). This indicates that I might be sleep deprived.
+
+###1.b - Activity Calories Burned
+
+```{r}
+cal_monthly <- ggplot(QS, aes(x=QS$Month, y=QS$`Activity Calories`))+geom_boxplot(aes(group=Month), fill="pink")+
+  labs(title = "Average Activity Calories Burned per Month", x = "Month", y = "Activity Calories Burned") + scale_x_discrete(limits=c("August","September","October")) + theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())
+cal_monthly <- ggplotly(cal_monthly)
+cal_monthly
+```
+
+***
+We notice that my activity calories increased since August - especially between August and September. They decreased, only by a small amount, between September and October.
+
+###1.c - Activity Levels
+
+```{r}
+QSAct <- QS[c(1,11:14)]
+QSAct_long <- melt(QSAct, id="Date")
+activity <- ggplot(QSAct_long, aes(QSAct_long$Date, value, colour=variable)) + geom_line() + labs(title = "Trend of Activity Level Breakdown", x = "Month", y = "Active Minutes") + theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank(), panel.grid.minor.y = element_blank())
+activity
+```
+
+***
+I added this graph to show the breakdown of the activity levels over this 3-month period. We can see that, as expected, the highest number of active minutes is from the "lightly active" category such as walking. The fairly and very active minutes are a significantly smaller portion of the entire active minutes.
+
+###1.d - Resting Heart Rate
+
+```{r}
+hb_monthly <- ggplot(QS, aes(x=QS$Month, y=QS$BPM))+geom_boxplot(aes(group=Month), fill="light green")+
+  labs(title = "Resting Heart Rate per Month", x = "Month", y = "Heartbeats per Minutes") + scale_x_discrete(limits=c("August","September","October")) + theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())
+hb_monthly <- ggplotly(hb_monthly)
+hb_monthly
+```
+
+***
+Resting heartrate is an indicator of the cardio fitness level. A lower your resting hearate indicates a better cardio fitness level. This shows my resting heartrate went down in September then increased a bit in October. Both the range and Inter-Quartile range got larger over this 3-month period as well. This is in line with what my activity calories boxplots show.
+
+###Q2: Weekday vs. Weekend Comparisons
+
+The second section includes visualization items comparing patterns for the weekday (Monday to Friday) vs. weekend (Saturday and Sunday). Here also we break it down under the following categories:
+2.a- Sleep patterns
+2.b- Calories Burned During Exercise 
+2.c- Resting Heartrate
+
+I used boxplots broken down by weekday and weekend to highlight any changes between the two.
+
+###2.a - Sleep Patterns
+```{r}
+sleep_weekly <- ggplot(QS, aes(x=QS$Weekend, y=QS$`Time in Bed`))+geom_boxplot(aes(group=QS$Weekend), fill="light blue")+
+  labs(title = "Minutes Asleep on Weekdays vs Weekend", x = "Day of the Week", y = "Number of Minutes")+scale_x_discrete(limits=c("Weekday","Weekend")) + theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())
+sleep_weekly <- ggplotly(sleep_weekly)
+sleep_weekly
+```
+
+***
+I expected my results to show that I sleep more on the weekends but as you can see it is not the case. I actually spend less time in bed on average Saturdays and Sundays.
+
+###2.b - Activity Calories Burned
+```{r}
+cal_weekly <- ggplot(QS, aes(x=QS$Weekend, y=QS$`Activity Calories`))+geom_boxplot(aes(group=QS$Weekend), fill="pink")+
+  labs(title = "Activity Level on Weekdays vs. Weekend", x = "Day of the Week", y = "Activity calories Burned")+scale_x_discrete(limits=c("Weekday","Weekend")) + theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())
+cal_weekly <- ggplotly(cal_weekly)
+cal_weekly
+```
+
+***
+The graph shows that I burn a bit more calories on average on the weekends. However the range is much larger. This makes sense as my weekend activities vary from exploring the city to staying home binging on Netflix (or doing homework).
+
+###2.c - Resting Heart Rate
+```{r}
+hb_weekly <- ggplot(QS, aes(x=QS$Weekend, y=QS$BPM))+geom_boxplot(aes(group=QS$Weekend), fill="light green")+
+  labs(title = "Resting Heart Rate on Weekdays vs. Weekend", x = "Day of the Week", y = "Heartbeats per Minute")+scale_x_discrete(limits=c("Weekday","Weekend")) + theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())
+hb_weekly <- ggplotly(hb_weekly)
+hb_weekly
+```
+
+***
+We notice a slightly higher resting heart rate during the weekend, which makes sense since I almost often workout during the week. Both ranges are also pretty wide.
+
+###Q3: Correlations
+
+The third section is composed of scatterplots to identify any correlation between the following:
+3.a- sleep and exercise
+3.b- sleep and resting heart rate
+3.c- resting heart rate and exercise
+
+For the correlation analysis involving exercise, I created two graphs. One of them takes into account all activity levels, while the other one includes only intense activity levels. This way, we will be able to see if our data suggests that the level of activity performed has any impact on sleep and/or resting heartrate.
+
+###3.a - Sleep vs. Exercise
+
+```{r}
+sleep_cal <- ggplot(QS, aes(x=QS$`Active Minutes`, y=QS$`Time in Bed`)) + geom_point(colour= "cornflowerblue") + labs(title = "Minutes Asleep vs. Active Minutes", x = "Active Minutes", y = "Minutes Asleep") + geom_smooth(se = FALSE, method = "lm", colour="black")
+sleep_cal
+
+sleep_hical <- ggplot(QS, aes(x=QS$`Minutes Very Active`, y=QS$`Time in Bed`)) + geom_point(colour="blue") + labs(title = "Minutes Asleep vs. Intense Activity Minutes", x = "Intense Active Minutes", y = "Minutes Asleep") + geom_smooth(se = FALSE, method = "lm", colour="black")
+sleep_hical
+```
+
+***
+It looks like there is a negative relationship between the number of active minutes I get and the amount of sleep I get.
+But, when looking at Intense Activity only , it seems like the more intense activity minutes I have, the longer I sleep.
+
+###3.b - Sleep vs.Resting Heartrate
+
+```{r}
+sleep_hb <- ggplot(QS, aes(x=QS$BPM, y=QS$`Time in Bed`)) + geom_point(colour="orange") + labs(title = "Minutes Asleep vs. Resting Heart Rate", x = "Resting Heart Rate", y = "Minutes Asleep") + geom_smooth(se = FALSE, method = "lm", colour="black")
+sleep_hb<- ggplotly(sleep_hb)
+sleep_hb
+```
+
+*** 
+The scatterplot shows that the lower the resting heart rate is, the more minutes asleep I seem to have. This could indicate that more exercise does help me sleep better.
+
+###3.c - Resting Heartrate vs. Exercise
+
+```{r}
+cal_hb <- ggplot(QS, aes(x=QS$`Active Minutes`, y=QS$BPM)) + geom_point(colour="coral") + labs(title = "Resting Heart Rate vs. Active Minutes", x = "Active Minutes", y = "Resting Heart Rate") + geom_smooth(se = FALSE, method = "lm", colour="black")
+cal_hb
+
+hical_hb <- ggplot(QS, aes(x=QS$`Minutes Very Active`, y=QS$BPM)) + geom_point(colour="magenta") + labs(title = "Resting Heart Rate vs. Intense Activity Minutes", x = "Intense Active Minutes", y = "Resting Heart Rate") + geom_smooth(se = FALSE, method = "lm", colour="black")
+hical_hb
+```
+
+***
+When looking at the total active minutes it looks like the more active I am, the higher my resting heart rate is. Although the relationship seems weak.
+
+However when I only consider intense active minutes, I see that the more intense activity I get, the lower my resting heart rate is. This could indicate that cardio fitness improvement is mostly the result of increased intense activity.
